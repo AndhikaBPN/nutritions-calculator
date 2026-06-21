@@ -32,16 +32,7 @@ class AuthApiController extends Controller
 
         return $this->success([
             'token' => $token,
-            'user'  => [
-                'id'         => $user->id,
-                'name'       => $user->name,
-                'full_name'  => $user->full_name,
-                'email'      => $user->email,
-                'gender'     => $user->gender?->value,
-                'height_cm'  => $user->height_cm,
-                'weight_kg'  => $user->weight_kg,
-                'photo_path' => $user->photo_path,
-            ],
+            'user'  => $this->formatUser($user),
         ], 'Login berhasil.');
     }
 
@@ -71,9 +62,12 @@ class AuthApiController extends Controller
 
     public function me(Request $request): JsonResponse
     {
-        $user = $request->user();
+        return $this->success($this->formatUser($request->user()));
+    }
 
-        return $this->success([
+    private function formatUser($user): array
+    {
+        return [
             'id'         => $user->id,
             'name'       => $user->name,
             'full_name'  => $user->full_name,
@@ -81,8 +75,9 @@ class AuthApiController extends Controller
             'gender'     => $user->gender?->value,
             'height_cm'  => $user->height_cm,
             'weight_kg'  => $user->weight_kg,
+            'bmi'        => $user->bmi,
             'photo_path' => $user->photo_path,
-        ]);
+        ];
     }
 
     public function sendResetLink(Request $request): JsonResponse

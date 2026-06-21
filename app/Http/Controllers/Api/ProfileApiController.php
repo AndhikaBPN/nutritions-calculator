@@ -15,11 +15,9 @@ class ProfileApiController extends Controller
 
     public function __construct(private ProfileService $profileService) {}
 
-    public function show(Request $request): JsonResponse
+    private function formatUser($user): array
     {
-        $user = $request->user();
-
-        return $this->success([
+        return [
             'id'         => $user->id,
             'name'       => $user->name,
             'full_name'  => $user->full_name,
@@ -27,8 +25,16 @@ class ProfileApiController extends Controller
             'gender'     => $user->gender?->value,
             'height_cm'  => $user->height_cm,
             'weight_kg'  => $user->weight_kg,
+            'bmi'        => $user->bmi,
             'photo_path' => $user->photo_path,
-        ]);
+        ];
+    }
+
+    public function show(Request $request): JsonResponse
+    {
+        $user = $request->user();
+
+        return $this->success($this->formatUser($user));
     }
 
     public function update(UpdateProfileRequest $request): JsonResponse
@@ -39,17 +45,6 @@ class ProfileApiController extends Controller
             photo: $request->file('photo'),
         );
 
-        $user = $request->user()->fresh();
-
-        return $this->success([
-            'id'         => $user->id,
-            'name'       => $user->name,
-            'full_name'  => $user->full_name,
-            'email'      => $user->email,
-            'gender'     => $user->gender?->value,
-            'height_cm'  => $user->height_cm,
-            'weight_kg'  => $user->weight_kg,
-            'photo_path' => $user->photo_path,
-        ], 'Profil berhasil diperbarui.');
+        return $this->success($this->formatUser($request->user()->fresh()), 'Profil berhasil diperbarui.');
     }
 }
