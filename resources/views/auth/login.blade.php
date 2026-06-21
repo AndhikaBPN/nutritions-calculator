@@ -30,11 +30,8 @@
         </div>
 
         <div>
-            <div class="flex items-center justify-between mb-1">
+            <div class="mb-1">
                 <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
-                <a href="{{ route('password.request') }}" class="text-xs text-[#2D6A4F] hover:underline">
-                    Lupa password?
-                </a>
             </div>
             <input
                 id="password"

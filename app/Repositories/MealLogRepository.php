@@ -3,16 +3,20 @@
 namespace App\Repositories;
 
 use App\Models\MealLog;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Collection;
 
 class MealLogRepository
 {
-    public function todayForUser(int $userId): Collection
+    public function todayForUser(int $userId, ?int $limit = null, int $page = 1): Collection|LengthAwarePaginator
     {
-        return MealLog::with('aiResult')
+        $query = MealLog::with('aiResult')
             ->where('user_id', $userId)
-            ->whereDate('date', today())
-            ->get();
+            ->whereDate('date', today());
+
+        return $limit
+            ? $query->paginate($limit, ['*'], 'page', $page)
+            : $query->get();
     }
 
     public function monthlyForChart(int $userId, string $month): Collection
@@ -27,8 +31,14 @@ class MealLogRepository
             ->get(['id', 'date']);
     }
 
-    public function forUserFiltered(int $userId, ?string $date, ?string $dateFrom, ?string $dateTo): Collection
-    {
+    public function forUserFiltered(
+        int $userId,
+        ?string $date,
+        ?string $dateFrom,
+        ?string $dateTo,
+        ?int $limit = null,
+        int $page = 1,
+    ): Collection|LengthAwarePaginator {
         $query = MealLog::with('aiResult')
             ->where('user_id', $userId)
             ->where('status', 'done');
@@ -39,7 +49,11 @@ class MealLogRepository
             $query->whereBetween('date', [$dateFrom, $dateTo]);
         }
 
-        return $query->orderByDesc('date')->orderBy('meal_type')->get();
+        $query->orderByDesc('date')->orderBy('meal_type');
+
+        return $limit
+            ? $query->paginate($limit, ['*'], 'page', $page)
+            : $query->get();
     }
 
     public function findOrFail(int $id): MealLog

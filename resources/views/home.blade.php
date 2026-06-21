@@ -115,7 +115,7 @@
 <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
 
     {{-- Filter Pills --}}
-    <div class="flex flex-wrap gap-2 mb-6">
+    <div class="flex flex-wrap gap-2 mb-6 justify-center">
         @php
             $nutrients = [
                 ['key' => 'protein',    'label' => 'Protein',     'color' => '#2D6A4F'],

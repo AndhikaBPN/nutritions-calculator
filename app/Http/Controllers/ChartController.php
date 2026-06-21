@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Repositories\MealLogRepository;
 use App\Services\NutritionService;
+use App\Traits\ApiResponsable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class ChartController extends Controller
 {
+    use ApiResponsable;
     public function __construct(
         private MealLogRepository $mealLogRepo,
         private NutritionService $nutritionService,
@@ -40,6 +42,6 @@ class ChartController extends Controller
             $serat[$i] = $values['fiber'];
         }
 
-        return response()->json(compact('labels', 'protein', 'vitamin', 'karbo', 'lemak', 'serat'));
+        return $this->success(compact('labels', 'protein', 'vitamin', 'karbo', 'lemak', 'serat'));
     }
 }

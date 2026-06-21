@@ -37,7 +37,7 @@
 @endif
 
 {{-- Profile Card --}}
-<div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 max-w-2xl">
+<div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
 
     {{-- Avatar + Name + BMI --}}
     <div class="flex items-start gap-5 mb-8">
@@ -104,7 +104,7 @@
 </div>
 
 {{-- Edit Form --}}
-<div id="edit-form" class="hidden mt-4 bg-white rounded-2xl shadow-sm border border-gray-100 p-8 max-w-2xl">
+<div id="edit-form" class="hidden mt-4 bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
     <h3 class="text-lg font-bold text-gray-900 mb-5">Edit Profil</h3>
 
     <form method="POST" action="{{ route('profile.update') }}" enctype="multipart/form-data" class="space-y-4">

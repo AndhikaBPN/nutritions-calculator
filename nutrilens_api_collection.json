@@ -1,0 +1,404 @@
+{
+  "info": {
+    "name": "NutriLens API",
+    "description": "NutriLens nutrition calculator API collection. Login first to get Bearer token, then set it in collection variables.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000/api",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string",
+      "description": "Filled automatically after Login request"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": { "type": "text/javascript", "exec": [""] }
+    },
+    {
+      "listen": "test",
+      "script": { "type": "text/javascript", "exec": [""] }
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res.data && res.data.token) {",
+                  "    pm.collectionVariables.set('token', res.data.token);",
+                  "    console.log('Token saved:', res.data.token);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"angela@nutrilens.test\",\n    \"password\": \"password123\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/login", "host": ["{{base_url}}"], "path": ["login"] }
+          }
+        },
+        {
+          "name": "Register",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"User Baru\",\n    \"email\": \"user@example.com\",\n    \"password\": \"Password123!\",\n    \"password_confirmation\": \"Password123!\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/register", "host": ["{{base_url}}"], "path": ["register"] }
+          }
+        },
+        {
+          "name": "Forgot Password",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"angela@nutrilens.test\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": { "raw": "{{base_url}}/forgot-password", "host": ["{{base_url}}"], "path": ["forgot-password"] }
+          }
+        },
+        {
+          "name": "Me (Current User)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/me", "host": ["{{base_url}}"], "path": ["me"] }
+          }
+        },
+        {
+          "name": "Logout",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.collectionVariables.set('token', '');"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/logout", "host": ["{{base_url}}"], "path": ["logout"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Home",
+      "item": [
+        {
+          "name": "Today's Meals + Daily Summary",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{base_url}}/home",
+              "host": ["{{base_url}}"],
+              "path": ["home"],
+              "query": [
+                { "key": "page", "value": "1", "disabled": true },
+                { "key": "limit", "value": "10", "disabled": true }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Meal Logs",
+      "item": [
+        {
+          "name": "Upload Meal Photo",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "meal_type",
+                  "value": "pagi",
+                  "description": "pagi | siang | malam",
+                  "type": "text"
+                },
+                {
+                  "key": "photo",
+                  "description": "Image file (JPG/PNG/WEBP, max 5MB)",
+                  "type": "file",
+                  "src": []
+                },
+                {
+                  "key": "date",
+                  "value": "2026-06-21",
+                  "description": "YYYY-MM-DD (default: today)",
+                  "type": "text"
+                }
+              ]
+            },
+            "url": { "raw": "{{base_url}}/meal-logs", "host": ["{{base_url}}"], "path": ["meal-logs"] }
+          }
+        },
+        {
+          "name": "Today's Meal Logs",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{base_url}}/meal-logs/today",
+              "host": ["{{base_url}}"],
+              "path": ["meal-logs", "today"],
+              "query": [
+                { "key": "page", "value": "1", "disabled": true },
+                { "key": "limit", "value": "10", "disabled": true }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Delete Meal Log",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{base_url}}/meal-logs/1",
+              "host": ["{{base_url}}"],
+              "path": ["meal-logs", "1"],
+              "variable": [
+                { "key": "id", "value": "1", "description": "meal_log id" }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "History",
+      "item": [
+        {
+          "name": "Get History (All)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{base_url}}/history",
+              "host": ["{{base_url}}"],
+              "path": ["history"],
+              "query": [
+                { "key": "page", "value": "1", "disabled": true },
+                { "key": "limit", "value": "10", "disabled": true },
+                { "key": "date", "value": "2026-06-21", "description": "Filter by exact date", "disabled": true },
+                { "key": "date_from", "value": "2026-06-01", "description": "Range start", "disabled": true },
+                { "key": "date_to", "value": "2026-06-21", "description": "Range end", "disabled": true }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get History (Filter by Date)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{base_url}}/history?date=2026-06-21",
+              "host": ["{{base_url}}"],
+              "path": ["history"],
+              "query": [
+                { "key": "date", "value": "2026-06-21" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get History (Filter by Date Range)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{base_url}}/history?date_from=2026-06-01&date_to=2026-06-21",
+              "host": ["{{base_url}}"],
+              "path": ["history"],
+              "query": [
+                { "key": "date_from", "value": "2026-06-01" },
+                { "key": "date_to", "value": "2026-06-21" }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get History (Paginated)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{base_url}}/history?page=1&limit=5",
+              "host": ["{{base_url}}"],
+              "path": ["history"],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "limit", "value": "5" }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Profile",
+      "item": [
+        {
+          "name": "Get Profile",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": { "raw": "{{base_url}}/profile", "host": ["{{base_url}}"], "path": ["profile"] }
+          }
+        },
+        {
+          "name": "Update Profile",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                { "key": "full_name", "value": "Angela Nazareta", "type": "text" },
+                {
+                  "key": "gender",
+                  "value": "perempuan",
+                  "description": "laki-laki | perempuan",
+                  "type": "text"
+                },
+                { "key": "height_cm", "value": "165", "type": "text" },
+                { "key": "weight_kg", "value": "58", "type": "text" },
+                {
+                  "key": "photo",
+                  "description": "Profile photo (optional, image file)",
+                  "type": "file",
+                  "src": [],
+                  "disabled": true
+                }
+              ]
+            },
+            "url": { "raw": "{{base_url}}/profile", "host": ["{{base_url}}"], "path": ["profile"] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Chart",
+      "item": [
+        {
+          "name": "Chart Data (Current Month)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{base_url}}/chart-data",
+              "host": ["{{base_url}}"],
+              "path": ["chart-data"]
+            }
+          }
+        },
+        {
+          "name": "Chart Data (Specific Month)",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Accept", "value": "application/json" }],
+            "url": {
+              "raw": "{{base_url}}/chart-data?month=2026-06",
+              "host": ["{{base_url}}"],
+              "path": ["chart-data"],
+              "query": [
+                { "key": "month", "value": "2026-06", "description": "Format: YYYY-MM" }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Webhook (n8n)",
+      "item": [
+        {
+          "name": "Nutrition Result Callback",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [
+              { "key": "Accept", "value": "application/json" },
+              { "key": "Content-Type", "value": "application/json" },
+              {
+                "key": "X-Webhook-Secret",
+                "value": "your_secret_here",
+                "description": "Must match N8N_WEBHOOK_SECRET in .env"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"meal_log_id\": 1,\n    \"food_name\": \"Nasi Goreng\",\n    \"calories\": 520.5,\n    \"protein\": 12.3,\n    \"carbs\": 78.1,\n    \"fat\": 18.5,\n    \"fiber\": 2.1,\n    \"vitamins\": {\n        \"vitamin_a\": 120,\n        \"vitamin_c\": 15\n    },\n    \"summary\": \"Nasi goreng dengan kandungan karbohidrat tinggi. Konsumsi wajar untuk sarapan.\"\n}",
+              "options": { "raw": { "language": "json" } }
+            },
+            "url": {
+              "raw": "{{base_url}}/webhook/nutrition-result",
+              "host": ["{{base_url}}"],
+              "path": ["webhook", "nutrition-result"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -31,10 +31,13 @@
                 </a>
             </nav>
 
-            <button onclick="openUploadModal(null)"
-                    class="bg-[#2D6A4F] hover:bg-[#245740] text-white px-5 py-2 rounded-full text-sm font-semibold transition-colors">
-                Upload Foto
-            </button>
+            <form method="POST" action="{{ route('logout') }}">
+                @csrf
+                <button type="submit"
+                        class="bg-[#2D6A4F] hover:bg-[#245740] text-white px-5 py-2 rounded-full text-sm font-semibold transition-colors">
+                    Logout
+                </button>
+            </form>
         </div>
     </header>
 

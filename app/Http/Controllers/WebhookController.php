@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Repositories\MealLogRepository;
 use App\Services\NutritionService;
+use App\Traits\ApiResponsable;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class WebhookController extends Controller
 {
+    use ApiResponsable;
     public function __construct(
         private MealLogRepository $mealLogRepo,
         private NutritionService $nutritionService,
@@ -38,6 +40,6 @@ class WebhookController extends Controller
 
         $this->nutritionService->recordAiResult($log, $data, $request->all());
 
-        return response()->json(['ok' => true]);
+        return $this->success(null, 'Nutrition result recorded.');
     }
 }
