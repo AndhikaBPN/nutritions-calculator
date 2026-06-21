@@ -9,6 +9,17 @@ use App\Models\MealLog;
 
 class NutritionService
 {
+    public function calculateBmi(?float $weightKg, ?int $heightCm): ?float
+    {
+        if (! $weightKg || ! $heightCm || $heightCm <= 0) {
+            return null;
+        }
+
+        $heightM = $heightCm / 100;
+
+        return round($weightKg / ($heightM ** 2), 2);
+    }
+
     public function classifyCalories(float $calories): CalorieStatus
     {
         return match (true) {
